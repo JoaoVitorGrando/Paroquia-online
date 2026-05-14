@@ -11,6 +11,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MissaSeeder::class,
             EventoSeeder::class,
+            GrupoSeeder::class,
+            AvisoSeeder::class,
         ]);
     }
 }
