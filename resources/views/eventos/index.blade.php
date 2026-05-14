@@ -26,22 +26,48 @@
                         <p class="card-text">{{ $evento->descricao }}</p>
                     </div>
                     <div class="card-footer bg-light">
-                        <span class="me-3">
-                            <i class="bi bi-calendar3"></i>
-                            {{ \Carbon\Carbon::parse($evento->data)->format('d/m/Y') }}
-                        </span>
-                        @if($evento->horario)
+                        <div class="mb-2">
                             <span class="me-3">
-                                <i class="bi bi-clock"></i>
-                                {{ \Carbon\Carbon::parse($evento->horario)->format('H:i') }}
+                                <i class="bi bi-calendar3"></i>
+                                {{ \Carbon\Carbon::parse($evento->data)->format('d/m/Y') }}
                             </span>
-                        @endif
-                        @if($evento->local)
-                            <span>
-                                <i class="bi bi-geo-alt"></i>
-                                {{ $evento->local }}
-                            </span>
-                        @endif
+                            @if($evento->horario)
+                                <span class="me-3">
+                                    <i class="bi bi-clock"></i>
+                                    {{ \Carbon\Carbon::parse($evento->horario)->format('H:i') }}
+                                </span>
+                            @endif
+                            @if($evento->local)
+                                <span>
+                                    <i class="bi bi-geo-alt"></i>
+                                    {{ $evento->local }}
+                                </span>
+                            @endif
+                        </div>
+                        {{-- US008 - Voluntariado --}}
+                        @auth
+                            @if(Auth::user()->eventosVoluntario->contains($evento->id))
+                                <form action="{{ route('voluntario.cancelar', $evento->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-x-circle"></i> Cancelar voluntariado
+                                    </button>
+                                </form>
+                                <span class="badge bg-success ms-1"><i class="bi bi-check"></i> Voluntário</span>
+                            @else
+                                <form action="{{ route('voluntario.inscrever', $evento->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="mensagem" value="">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-hand-thumbs-up"></i> Quero ser voluntário
+                                    </button>
+                                </form>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-person"></i> Login para ser voluntário
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>
