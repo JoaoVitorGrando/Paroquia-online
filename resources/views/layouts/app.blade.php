@@ -45,7 +45,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('missas.index') }}">
+            <a class="navbar-brand" href="{{ route('home') }}">
                 <i class="bi bi-church"></i> Paróquia N. S. da Glória
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -54,8 +54,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ route('home') }}">
+                            <i class="bi bi-house"></i> Início
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ route('missas.index') }}">
-                            <i class="bi bi-clock"></i> Horários de Missas
+                            <i class="bi bi-clock"></i> Missas
                         </a>
                     </li>
                     <li class="nav-item">
@@ -63,18 +68,49 @@
                             <i class="bi bi-calendar-event"></i> Eventos
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('grupos.index') }}">
+                            <i class="bi bi-people"></i> Grupos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('avisos.index') }}">
+                            <i class="bi bi-megaphone"></i> Avisos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('sobre') }}">
+                            <i class="bi bi-info-circle"></i> Sobre
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('contato') }}">
+                            <i class="bi bi-envelope"></i> Contato
+                        </a>
+                    </li>
 
                     @auth
+                        @if(Auth::user()->is_admin)
                         <li class="nav-item">
-                            <span class="nav-link">Olá, {{ Auth::user()->name }}</span>
+                            <a class="nav-link" href="{{ route('admin.index') }}">
+                                <i class="bi bi-gear"></i> Admin
+                            </a>
                         </li>
-                        <li class="nav-item">
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-sm btn-outline-light ms-2">
-                                    <i class="bi bi-box-arrow-right"></i> Sair
-                                </button>
-                            </form>
+                        @endif
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">
+                                            <i class="bi bi-box-arrow-right"></i> Sair
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
                     @else
                         <li class="nav-item">
