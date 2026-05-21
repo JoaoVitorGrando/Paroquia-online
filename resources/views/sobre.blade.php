@@ -10,7 +10,7 @@
 
         <div class="card shadow-sm mb-4">
             <div class="card-header text-white" style="background-color: #1a3a5c;">
-                <strong>Paróquia Nossa Senhora da Glória — Igreja Católica Ucraniana</strong>
+                <strong>Paróquia Nossa Senhora da Glória, Igreja Católica Ucraniana</strong>
             </div>
             <div class="card-body">
                 <p>A Paróquia Nossa Senhora da Glória é uma comunidade da Igreja Católica Ucraniana que atua na promoção de atividades religiosas, culturais e comunitárias, atendendo fiéis da região.</p>

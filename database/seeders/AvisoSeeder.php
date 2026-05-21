@@ -16,7 +16,7 @@ class AvisoSeeder extends Seeder
                 'destaque' => true,
             ],
             [
-                'titulo'   => 'Festa da Colheita — Confirmada para Julho',
+                'titulo'   => 'Festa da Colheita confirmada para julho',
                 'conteudo' => 'A tradicional Festa da Colheita está confirmada para o dia 20 de julho. Voluntários podem se inscrever pelo site.',
                 'destaque' => false,
             ],

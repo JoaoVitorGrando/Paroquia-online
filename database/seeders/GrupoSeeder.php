@@ -22,7 +22,7 @@ class GrupoSeeder extends Seeder
                 'nome'            => 'Grupo de Dança Ucraniana',
                 'descricao'       => 'Preservação da cultura ucraniana através da dança tradicional. Aberto para todas as idades.',
                 'responsavel'     => 'Olena Petrenko',
-                'dia_reuniao'     => 'Quarta-feira',
+                'dia_reuniao'     => 'Quarta feira',
                 'horario_reuniao' => '19:30',
                 'local'           => 'Salão Paroquial',
             ],

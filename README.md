@@ -64,6 +64,23 @@ php artisan serve
 
 Acesse em: http://localhost:8000
 
+## Acesso administrador
+
+Após rodar `php artisan migrate --seed`, use o login normal em `/login`:
+
+| Campo | Valor |
+|-------|-------|
+| E-mail | `admin@paroquia.com` |
+| Senha | `admin123` |
+
+O painel fica em: http://localhost:8000/admin
+
+Se o banco já existir, crie só o admin com:
+
+```bash
+php artisan db:seed --class=AdminSeeder
+```
+
 ## Sprint 1 - Funcionalidades implementadas
 
 - US001: Visualização de horários de missas

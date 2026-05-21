@@ -151,7 +151,7 @@
     <!-- Footer -->
     <footer class="footer text-center">
         <div class="container">
-            <p class="mb-0">Paróquia Nossa Senhora da Glória &mdash; Igreja Católica Ucraniana</p>
+            <p class="mb-0">Paróquia Nossa Senhora da Glória, Igreja Católica Ucraniana</p>
             <small>Sistema desenvolvido por alunos do curso de Engenharia de Software</small>
         </div>
     </footer>

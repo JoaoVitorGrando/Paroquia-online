@@ -63,7 +63,12 @@ class AuthController extends Controller
 
         if (Auth::attempt($credenciais)) {
             $request->session()->regenerate();
-            return redirect()->route('missas.index')->with('sucesso', 'Login realizado com sucesso! Bem-vindo(a), ' . Auth::user()->name . '.');
+
+            $destino = Auth::user()->is_admin
+                ? route('admin.index')
+                : route('missas.index');
+
+            return redirect($destino)->with('sucesso', 'Login realizado com sucesso! Bem-vindo(a), ' . Auth::user()->name . '.');
         }
 
         return back()->with('erro', 'E-mail ou senha incorretos.');

@@ -50,7 +50,7 @@
                                 <form action="{{ route('grupos.inscrever', $grupo->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     <button type="submit" class="btn btn-sm text-white" style="background-color:#1a3a5c;">
-                                        <i class="bi bi-person-plus"></i> Inscrever-se
+                                        <i class="bi bi-person-plus"></i> Participar
                                     </button>
                                 </form>
                             @endif

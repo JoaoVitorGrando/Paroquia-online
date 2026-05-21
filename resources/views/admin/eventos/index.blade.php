@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Admin - Eventos')
+@section('title', 'Admin Eventos')
 
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -28,7 +28,7 @@
                     <tr>
                         <td>{{ $evento->titulo }}</td>
                         <td>{{ \Carbon\Carbon::parse($evento->data)->format('d/m/Y') }}</td>
-                        <td>{{ $evento->local ?? '—' }}</td>
+                        <td>{{ $evento->local ?? 'Não informado' }}</td>
                         <td class="text-center">
                             <a href="{{ route('admin.eventos.editar', $evento->id) }}" class="btn btn-sm btn-outline-primary me-1">
                                 <i class="bi bi-pencil"></i> Editar

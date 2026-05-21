@@ -8,7 +8,7 @@
 <div class="p-4 mb-4 rounded-3 text-white" style="background-color: #1a3a5c;">
     <div class="container-fluid py-3">
         <h1 class="display-6 fw-bold"><i class="bi bi-church"></i> Paróquia Nossa Senhora da Glória</h1>
-        <p class="fs-5">Igreja Católica Ucraniana — bem-vindo à nossa comunidade!</p>
+        <p class="fs-5">Igreja Católica Ucraniana. Bem vindo à nossa comunidade!</p>
         <a href="{{ route('sobre') }}" class="btn btn-outline-light me-2">
             <i class="bi bi-info-circle"></i> Conheça a Paróquia
         </a>
@@ -67,7 +67,7 @@
     <div class="col-md-4">
         <div class="card shadow-sm h-100">
             <div class="card-header text-white" style="background-color: #1a3a5c;">
-                <h5 class="mb-0"><i class="bi bi-clock"></i> Missas — Domingo</h5>
+                <h5 class="mb-0"><i class="bi bi-clock"></i> Missas de domingo</h5>
             </div>
             <div class="card-body">
                 @forelse($missasDomingo as $missa)
