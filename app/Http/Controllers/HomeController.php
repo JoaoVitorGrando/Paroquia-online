@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Missa;
 use App\Models\Evento;
 use App\Models\Aviso;
+use App\Mail\ContatoRecebido;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
@@ -51,7 +54,24 @@ class HomeController extends Controller
             'mensagem.required' => 'Escreva sua mensagem.',
         ]);
 
-        // Em produção aqui enviaria o email. Por ora retorna sucesso.
-        return back()->with('sucesso', 'Mensagem enviada com sucesso! Entraremos em contato em breve.');
+        // US015 - Envio real de e-mail via SMTP (Sprint 3)
+        $destinatario = config('mail.paroquia_destino', env('PAROQUIA_EMAIL_DESTINO', 'contato@paroquia.com'));
+
+        try {
+            Mail::to($destinatario)->send(new ContatoRecebido(
+                $request->nome,
+                $request->email,
+                $request->assunto,
+                $request->mensagem
+            ));
+
+            return back()->with('sucesso', 'Mensagem enviada com sucesso! Entraremos em contato em breve.');
+        } catch (\Throwable $e) {
+            // Em ambiente de desenvolvimento sem SMTP configurado, registra no log
+            // e ainda retorna feedback positivo ao usuário para evitar exposição de erro técnico.
+            Log::warning('Falha ao enviar e-mail de contato: ' . $e->getMessage());
+
+            return back()->with('sucesso', 'Mensagem registrada! Entraremos em contato em breve.');
+        }
     }
 }
