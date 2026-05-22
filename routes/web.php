@@ -65,4 +65,23 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/avisos/criar', [AdminController::class, 'criarAviso'])->name('avisos.criar');
     Route::post('/avisos', [AdminController::class, 'salvarAviso'])->name('avisos.salvar');
     Route::delete('/avisos/{id}', [AdminController::class, 'excluirAviso'])->name('avisos.excluir');
+
+    // US013 - Gerenciamento de Grupos (Sprint 3)
+    Route::get('/grupos', [AdminController::class, 'grupos'])->name('grupos');
+    Route::get('/grupos/criar', [AdminController::class, 'criarGrupo'])->name('grupos.criar');
+    Route::post('/grupos', [AdminController::class, 'salvarGrupo'])->name('grupos.salvar');
+    Route::get('/grupos/{id}/editar', [AdminController::class, 'editarGrupo'])->name('grupos.editar');
+    Route::put('/grupos/{id}', [AdminController::class, 'atualizarGrupo'])->name('grupos.atualizar');
+    Route::patch('/grupos/{id}/alternar', [AdminController::class, 'alternarGrupo'])->name('grupos.alternar');
+    Route::delete('/grupos/{id}', [AdminController::class, 'excluirGrupo'])->name('grupos.excluir');
+    Route::get('/grupos/{id}/inscritos', [AdminController::class, 'inscritosGrupo'])->name('grupos.inscritos');
+
+    // US014 - Gerenciamento de Missas (Sprint 3)
+    Route::get('/missas', [AdminController::class, 'missas'])->name('missas');
+    Route::get('/missas/criar', [AdminController::class, 'criarMissa'])->name('missas.criar');
+    Route::post('/missas', [AdminController::class, 'salvarMissa'])->name('missas.salvar');
+    Route::get('/missas/{id}/editar', [AdminController::class, 'editarMissa'])->name('missas.editar');
+    Route::put('/missas/{id}', [AdminController::class, 'atualizarMissa'])->name('missas.atualizar');
+    Route::patch('/missas/{id}/alternar', [AdminController::class, 'alternarMissa'])->name('missas.alternar');
+    Route::delete('/missas/{id}', [AdminController::class, 'excluirMissa'])->name('missas.excluir');
 });
