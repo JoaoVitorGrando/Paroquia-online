@@ -87,3 +87,21 @@ php artisan db:seed --class=AdminSeeder
 - US002: Visualização de eventos e festas da comunidade
 - US003: Cadastro de usuário
 - US004: Login de usuário
+
+## Sprint 2 - Funcionalidades implementadas
+
+- US005 a US012: Inscrição em grupos, voluntariado, painel admin de eventos e avisos, Home, Sobre, Avisos e Contato
+
+## Sprint 3 - Funcionalidades implementadas
+
+- US013: CRUD admin de Grupos (criar, editar, ativar/desativar, listar inscritos)
+- US014: CRUD admin de Horários de Missas
+- US015: Envio real de e-mail no formulário de contato (via SMTP)
+- US016: Testes unitários e de feature (Auth, Grupo, Evento, Contato)
+- US017: Refinos de UX — hero com imagem da igreja na home e footer fixo no final da página
+
+### Executar testes
+
+```bash
+php artisan test
+```
