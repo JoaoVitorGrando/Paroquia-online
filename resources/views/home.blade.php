@@ -2,21 +2,44 @@
 
 @section('title', 'Início')
 
-@section('content')
-
-{{-- Banner --}}
-<div class="p-4 mb-4 rounded-3 text-white" style="background-color: #1a3a5c;">
-    <div class="container-fluid py-3">
-        <h1 class="display-6 fw-bold"><i class="bi bi-church"></i> Paróquia Nossa Senhora da Glória</h1>
-        <p class="fs-5">Igreja Católica Ucraniana. Bem vindo à nossa comunidade!</p>
-        <a href="{{ route('sobre') }}" class="btn btn-outline-light me-2">
+@section('hero')
+{{-- Hero com carrossel de imagens (5s) --}}
+<section class="hero-igreja">
+    <div class="hero-igreja-slides" aria-hidden="true">
+        <div class="hero-slide active" style="background-image: url('{{ asset('images/sobre7.jpg') }}');"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('images/sobre8.jpg') }}');"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('images/igreja4k.png') }}');"></div>
+        <div class="hero-slide" style="background-image: url('{{ asset('images/sobre4.jpeg') }}');"></div>
+    </div>
+    <div class="container">
+        <h1 class="mb-3"><i class="bi bi-church"></i> Paróquia Nossa Senhora da Glória</h1>
+        <p class="lead mb-4">Igreja Católica Ucraniana, bem-vindo à nossa comunidade!</p>
+        <a href="{{ route('sobre') }}" class="btn btn-hero me-2">
             <i class="bi bi-info-circle"></i> Conheça a Paróquia
         </a>
         <a href="{{ route('contato') }}" class="btn btn-outline-light">
             <i class="bi bi-envelope"></i> Entre em Contato
         </a>
     </div>
-</div>
+</section>
+@endsection
+
+@push('scripts')
+<script>
+(function () {
+    const slides = document.querySelectorAll('.hero-slide');
+    if (slides.length < 2) return;
+    let atual = 0;
+    setInterval(function () {
+        slides[atual].classList.remove('active');
+        atual = (atual + 1) % slides.length;
+        slides[atual].classList.add('active');
+    }, 5000);
+})();
+</script>
+@endpush
+
+@section('content')
 
 {{-- Aviso destaque --}}
 @if($avisoDestaque)
