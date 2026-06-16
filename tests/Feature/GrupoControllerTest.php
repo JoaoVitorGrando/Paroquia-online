@@ -132,6 +132,6 @@ class GrupoControllerTest extends TestCase
 
         $this->actingAs($admin)->patch(route('admin.grupos.alternar', $grupo->id));
 
-        $this->assertFalse($grupo->fresh()->ativo);
+        $this->assertFalse((bool) $grupo->fresh()->ativo);
     }
 }

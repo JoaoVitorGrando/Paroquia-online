@@ -18,7 +18,7 @@ class VoluntarioController extends Controller
         $evento = Evento::findOrFail($eventoId);
         $user   = Auth::user();
 
-        if ($user->eventosVoluntario->contains($evento->id)) {
+        if ($user->eventosVoluntario()->where('evento_id', $evento->id)->exists()) {
             return back()->with('erro', 'Você já está inscrito como voluntário neste evento.');
         }
 

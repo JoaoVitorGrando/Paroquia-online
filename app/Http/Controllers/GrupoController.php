@@ -26,7 +26,7 @@ class GrupoController extends Controller
         $grupo = Grupo::findOrFail($id);
         $user  = Auth::user();
 
-        if ($user->grupos->contains($grupo->id)) {
+        if ($user->grupos()->where('grupo_id', $grupo->id)->exists()) {
             return back()->with('erro', 'Você já está inscrito neste grupo.');
         }
 

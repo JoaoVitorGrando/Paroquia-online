@@ -6,7 +6,10 @@
 <div class="row justify-content-center">
     <div class="col-md-7">
         <h2 class="mb-1"><i class="bi bi-envelope"></i> Entre em Contato</h2>
-        <p class="text-muted mb-4">Envie uma mensagem para a paróquia.</p>
+        <p class="text-muted mb-4">
+            Envie uma mensagem para a paróquia ou escreva diretamente para
+            <a href="mailto:{{ $emailDestino }}">{{ $emailDestino }}</a>.
+        </p>
 
         <div class="card shadow-sm">
             <div class="card-body">

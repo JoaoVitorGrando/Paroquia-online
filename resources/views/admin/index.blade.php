@@ -42,7 +42,7 @@
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header text-white" style="background-color:#1a3a5c;">
-                <strong><i class="bi bi-people"></i> Grupos <span class="badge bg-warning text-dark ms-2">Sprint 3</span></strong>
+                <strong><i class="bi bi-people"></i> Grupos</strong>
             </div>
             <div class="card-body">
                 <p class="fs-4 fw-bold">{{ $totalGrupos ?? 0 }} grupos cadastrados</p>
@@ -58,7 +58,7 @@
     <div class="col-md-6">
         <div class="card shadow-sm h-100">
             <div class="card-header text-white" style="background-color:#1a3a5c;">
-                <strong><i class="bi bi-clock"></i> Missas <span class="badge bg-warning text-dark ms-2">Sprint 3</span></strong>
+                <strong><i class="bi bi-clock"></i> Missas</strong>
             </div>
             <div class="card-body">
                 <p class="fs-4 fw-bold">{{ $totalMissas ?? 0 }} horários cadastrados</p>

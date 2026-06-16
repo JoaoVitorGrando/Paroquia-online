@@ -36,7 +36,9 @@ class HomeController extends Controller
 
     public function contato()
     {
-        return view('contato.index');
+        $emailDestino = env('PAROQUIA_EMAIL_DESTINO', 'engs-luisdomingues@camporeal.edu.br');
+
+        return view('contato.index', compact('emailDestino'));
     }
 
     public function contatoEnviar(\Illuminate\Http\Request $request)
@@ -55,7 +57,7 @@ class HomeController extends Controller
         ]);
 
         // US015 - Envio real de e-mail via SMTP (Sprint 3)
-        $destinatario = config('mail.paroquia_destino', env('PAROQUIA_EMAIL_DESTINO', 'contato@paroquia.com'));
+        $destinatario = config('mail.paroquia_destino', env('PAROQUIA_EMAIL_DESTINO', 'engs-luisdomingues@camporeal.edu.br'));
 
         try {
             Mail::to($destinatario)->send(new ContatoRecebido(

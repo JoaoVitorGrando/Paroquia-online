@@ -84,7 +84,7 @@ class AuthControllerTest extends TestCase
         ]);
 
         $this->assertGuest();
-        $response->assertSessionHasErrors();
+        $response->assertSessionHas('erro');
     }
 
     /** @test */

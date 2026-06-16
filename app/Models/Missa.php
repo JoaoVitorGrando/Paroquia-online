@@ -20,4 +20,21 @@ class Missa extends Model
     protected $casts = [
         'ativo' => 'boolean',
     ];
+
+    public static function listarOrdenadas()
+    {
+        $ordem = [
+            'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira',
+            'Quinta-feira', 'Sexta-feira', 'Sábado',
+        ];
+
+        return static::query()
+            ->get()
+            ->sortBy(function ($missa) use ($ordem) {
+                $dia = array_search($missa->dia_semana, $ordem);
+
+                return ($dia !== false ? $dia : 99) . $missa->horario;
+            })
+            ->values();
+    }
 }
