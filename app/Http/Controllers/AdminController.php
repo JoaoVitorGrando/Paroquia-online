@@ -10,20 +10,87 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    // Painel principal admin
+    // ========================================
+    // Helpers de imagem (grupos e eventos)
+    // ========================================
+
+    // Move o arquivo enviado para public/uploads/{pasta} e devolve o caminho relativo
+    private function salvarImagem(Request $request, string $pasta): ?string
+    {
+        if (! $request->hasFile('imagem')) {
+            return null;
+        }
+
+        $arquivo   = $request->file('imagem');
+        $extensao  = strtolower($arquivo->getClientOriginalExtension() ?: 'jpg');
+        $nome      = $pasta . '-' . uniqid() . '.' . $extensao;
+        $destino   = public_path('uploads/' . $pasta);
+
+        $arquivo->move($destino, $nome);
+
+        return 'uploads/' . $pasta . '/' . $nome;
+    }
+
+    // Apaga do disco a imagem antiga, se existir
+    private function removerImagem(?string $caminho): void
+    {
+        if (! $caminho) {
+            return;
+        }
+
+        $arquivo = public_path($caminho);
+
+        if (is_file($arquivo)) {
+            @unlink($arquivo);
+        }
+    }
+
+    // Regra de validacao usada nos formularios de grupo e evento
+    private function regrasImagem(): array
+    {
+        return ['imagem' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048'];
+    }
+
+    // ========================================
+    // Painel administrativo (dashboard)
+    // ========================================
     public function index()
     {
         $totalEventos = Evento::count();
         $totalAvisos  = Aviso::count();
         $totalGrupos  = Grupo::count();
         $totalMissas  = Missa::count();
-        return view('admin.index', compact('totalEventos', 'totalAvisos', 'totalGrupos', 'totalMissas'));
+
+        // Indicadores secundarios de cada cartao
+        $eventosProximos  = Evento::where('data', '>=', now()->toDateString())->count();
+        $avisosDestaque   = Aviso::where('destaque', true)->count();
+        $missasAtivas     = Missa::where('ativo', true)->count();
+        $totalInscritos   = Grupo::withCount('inscritos')->get()->sum('inscritos_count');
+
+        // Paineis do dashboard
+        $proximosEventos = Evento::where('data', '>=', now()->toDateString())
+            ->orderBy('data', 'asc')
+            ->take(3)
+            ->get();
+
+        $gruposPopulares = Grupo::withCount('inscritos')
+            ->orderByDesc('inscritos_count')
+            ->take(5)
+            ->get();
+
+        $avisosRecentes = Aviso::latest()->take(3)->get();
+
+        return view('admin.index', compact(
+            'totalEventos', 'totalAvisos', 'totalGrupos', 'totalMissas',
+            'eventosProximos', 'avisosDestaque', 'missasAtivas', 'totalInscritos',
+            'proximosEventos', 'gruposPopulares', 'avisosRecentes'
+        ));
     }
 
     // US006 - Listar eventos no admin
     public function eventos()
     {
-        $eventos = Evento::orderBy('data', 'desc')->get();
+        $eventos = Evento::withCount('voluntarios')->orderBy('data', 'desc')->get();
         return view('admin.eventos.index', compact('eventos'));
     }
 
@@ -36,20 +103,27 @@ class AdminController extends Controller
     // US006 - Salvar novo evento
     public function salvarEvento(Request $request)
     {
-        $request->validate([
+        $request->validate(array_merge([
             'titulo'    => 'required|string|max:255',
             'descricao' => 'required|string',
             'data'      => 'required|date',
             'horario'   => 'nullable|date_format:H:i',
             'local'     => 'nullable|string|max:255',
-        ], [
+        ], $this->regrasImagem()), [
             'titulo.required'    => 'O título é obrigatório.',
             'descricao.required' => 'A descrição é obrigatória.',
             'data.required'      => 'A data é obrigatória.',
             'data.date'          => 'Data inválida.',
         ]);
 
-        Evento::create($request->only('titulo', 'descricao', 'data', 'horario', 'local'));
+        $dados = $request->only('titulo', 'descricao', 'data', 'horario', 'local');
+
+        // Foto do evento (opcional)
+        if ($caminho = $this->salvarImagem($request, 'eventos')) {
+            $dados['imagem'] = $caminho;
+        }
+
+        Evento::create($dados);
 
         return redirect()->route('admin.eventos')->with('sucesso', 'Evento cadastrado com sucesso!');
     }
@@ -64,16 +138,27 @@ class AdminController extends Controller
     // US006 - Atualizar evento
     public function atualizarEvento(Request $request, $id)
     {
-        $request->validate([
+        $request->validate(array_merge([
             'titulo'    => 'required|string|max:255',
             'descricao' => 'required|string',
             'data'      => 'required|date',
             'horario'   => 'nullable|date_format:H:i',
             'local'     => 'nullable|string|max:255',
-        ]);
+        ], $this->regrasImagem()));
 
         $evento = Evento::findOrFail($id);
-        $evento->update($request->only('titulo', 'descricao', 'data', 'horario', 'local'));
+        $dados  = $request->only('titulo', 'descricao', 'data', 'horario', 'local');
+
+        // Foto nova substitui a antiga; checkbox remover_imagem apaga a atual
+        if ($caminho = $this->salvarImagem($request, 'eventos')) {
+            $this->removerImagem($evento->imagem);
+            $dados['imagem'] = $caminho;
+        } elseif ($request->has('remover_imagem')) {
+            $this->removerImagem($evento->imagem);
+            $dados['imagem'] = null;
+        }
+
+        $evento->update($dados);
 
         return redirect()->route('admin.eventos')->with('sucesso', 'Evento atualizado com sucesso!');
     }
@@ -81,8 +166,17 @@ class AdminController extends Controller
     // US006 - Excluir evento
     public function excluirEvento($id)
     {
-        Evento::findOrFail($id)->delete();
+        $evento = Evento::findOrFail($id);
+        $this->removerImagem($evento->imagem);
+        $evento->delete();
         return redirect()->route('admin.eventos')->with('sucesso', 'Evento removido.');
+    }
+
+    // US008 - Voluntários inscritos em um evento
+    public function voluntariosEvento($id)
+    {
+        $evento = Evento::with('voluntarios')->findOrFail($id);
+        return view('admin.eventos.voluntarios', compact('evento'));
     }
 
     // Avisos admin
@@ -113,6 +207,34 @@ class AdminController extends Controller
         return redirect()->route('admin.avisos')->with('sucesso', 'Aviso publicado com sucesso!');
     }
 
+    // Formulário para editar aviso
+    public function editarAviso($id)
+    {
+        $aviso = Aviso::findOrFail($id);
+        return view('admin.avisos.editar', compact('aviso'));
+    }
+
+    // Atualizar aviso
+    public function atualizarAviso(Request $request, $id)
+    {
+        $request->validate([
+            'titulo'   => 'required|string|max:255',
+            'conteudo' => 'required|string',
+        ], [
+            'titulo.required'   => 'O título é obrigatório.',
+            'conteudo.required' => 'O conteúdo é obrigatório.',
+        ]);
+
+        $aviso = Aviso::findOrFail($id);
+        $aviso->update([
+            'titulo'   => $request->titulo,
+            'conteudo' => $request->conteudo,
+            'destaque' => $request->has('destaque'),
+        ]);
+
+        return redirect()->route('admin.avisos')->with('sucesso', 'Aviso atualizado com sucesso!');
+    }
+
     public function excluirAviso($id)
     {
         Aviso::findOrFail($id)->delete();
@@ -135,14 +257,14 @@ class AdminController extends Controller
 
     public function salvarGrupo(Request $request)
     {
-        $request->validate([
+        $request->validate(array_merge([
             'nome'             => 'required|string|max:255',
             'descricao'        => 'required|string',
             'responsavel'      => 'nullable|string|max:255',
             'dia_reuniao'      => 'nullable|string|max:50',
             'horario_reuniao'  => 'nullable|date_format:H:i',
             'local'            => 'nullable|string|max:255',
-        ], [
+        ], $this->regrasImagem()), [
             'nome.required'      => 'O nome do grupo é obrigatório.',
             'descricao.required' => 'A descrição é obrigatória.',
         ]);
@@ -154,6 +276,7 @@ class AdminController extends Controller
             'dia_reuniao'      => $request->dia_reuniao,
             'horario_reuniao'  => $request->horario_reuniao,
             'local'            => $request->local,
+            'imagem'           => $this->salvarImagem($request, 'grupos'),
             'ativo'            => true,
         ]);
 
@@ -168,19 +291,30 @@ class AdminController extends Controller
 
     public function atualizarGrupo(Request $request, $id)
     {
-        $request->validate([
+        $request->validate(array_merge([
             'nome'             => 'required|string|max:255',
             'descricao'        => 'required|string',
             'responsavel'      => 'nullable|string|max:255',
             'dia_reuniao'      => 'nullable|string|max:50',
             'horario_reuniao'  => 'nullable|date_format:H:i',
             'local'            => 'nullable|string|max:255',
-        ]);
+        ], $this->regrasImagem()));
 
         $grupo = Grupo::findOrFail($id);
-        $grupo->update($request->only(
+        $dados = $request->only(
             'nome', 'descricao', 'responsavel', 'dia_reuniao', 'horario_reuniao', 'local'
-        ));
+        );
+
+        // Foto nova substitui a antiga; checkbox remover_imagem apaga a atual
+        if ($caminho = $this->salvarImagem($request, 'grupos')) {
+            $this->removerImagem($grupo->imagem);
+            $dados['imagem'] = $caminho;
+        } elseif ($request->has('remover_imagem')) {
+            $this->removerImagem($grupo->imagem);
+            $dados['imagem'] = null;
+        }
+
+        $grupo->update($dados);
 
         return redirect()->route('admin.grupos')->with('sucesso', 'Grupo atualizado com sucesso!');
     }
@@ -198,6 +332,7 @@ class AdminController extends Controller
     public function excluirGrupo($id)
     {
         $grupo = Grupo::findOrFail($id);
+        $this->removerImagem($grupo->imagem);
         $grupo->inscritos()->detach();
         $grupo->delete();
         return redirect()->route('admin.grupos')->with('sucesso', 'Grupo removido.');

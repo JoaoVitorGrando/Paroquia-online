@@ -3,16 +3,20 @@
 @section('title', 'Novo Grupo')
 
 @section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="mb-0"><i class="bi bi-plus-circle"></i> Novo Grupo</h2>
-    <a href="{{ route('admin.grupos') }}" class="btn btn-outline-secondary">
+<div class="admin-topbar d-flex flex-wrap align-items-center gap-3">
+    <span class="topbar-icon"><i class="bi bi-plus-circle"></i></span>
+    <div class="me-auto">
+        <h2>Novo grupo</h2>
+        <p class="topbar-sub">Cadastre um grupo ou pastoral da paróquia</p>
+    </div>
+    <a href="{{ route('admin.grupos') }}" class="btn btn-sm btn-outline-light">
         <i class="bi bi-arrow-left"></i> Voltar
     </a>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <form action="{{ route('admin.grupos.salvar') }}" method="POST">
+<div class="panel-card">
+    <div class="panel-body">
+        <form action="{{ route('admin.grupos.salvar') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-3">
@@ -56,6 +60,15 @@
                            value="{{ old('horario_reuniao') }}">
                     @error('horario_reuniao')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
+            </div>
+
+            {{-- Foto do grupo (opcional) --}}
+            <div class="mb-3">
+                <label class="form-label">Foto do grupo</label>
+                <input type="file" name="imagem" accept="image/*"
+                       class="form-control @error('imagem') is-invalid @enderror">
+                <div class="form-text">JPG, PNG ou WEBP, até 2 MB. O grupo também pode ficar sem foto.</div>
+                @error('imagem')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
 
             <button type="submit" class="btn text-white" style="background-color:#1a3a5c;">

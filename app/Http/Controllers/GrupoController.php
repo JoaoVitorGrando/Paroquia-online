@@ -26,6 +26,11 @@ class GrupoController extends Controller
         $grupo = Grupo::findOrFail($id);
         $user  = Auth::user();
 
+        // O administrador gerencia e acompanha, nao participa
+        if ($user->is_admin) {
+            return back()->with('erro', 'Administradores não podem se inscrever em grupos. Use o painel para visualizar os inscritos.');
+        }
+
         if ($user->grupos()->where('grupo_id', $grupo->id)->exists()) {
             return back()->with('erro', 'Você já está inscrito neste grupo.');
         }

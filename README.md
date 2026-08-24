@@ -66,20 +66,20 @@ Acesse em: http://localhost:8000
 
 ## Acesso administrador
 
-Após rodar `php artisan migrate --seed`, use o login normal em `/login`:
+As credenciais do administrador **não ficam no repositório**. Defina no seu `.env`:
 
-| Campo | Valor |
-|-------|-------|
-| E-mail | `admin@paroquia.com` |
-| Senha | `admin123` |
+```
+ADMIN_EMAIL=seu-email@exemplo.com
+ADMIN_SENHA=uma-senha-forte
+```
 
-O painel fica em: http://localhost:8000/admin
-
-Se o banco já existir, crie só o admin com:
+Depois rode o seeder do admin (pode ser rodado de novo para redefinir a senha):
 
 ```bash
 php artisan db:seed --class=AdminSeeder
 ```
+
+O painel fica em: http://localhost:8000/admin
 
 ## Sprint 1 - Funcionalidades implementadas
 
@@ -105,3 +105,14 @@ php artisan db:seed --class=AdminSeeder
 ```bash
 php artisan test
 ```
+
+## Sprint 4 - Funcionalidades implementadas
+
+- Correção da ordenação dos horários de missa (`Missa::indiceDia()`)
+- Edição de avisos no painel administrativo
+- Visualização dos voluntários de cada evento
+- Upload de fotos em grupos e eventos
+- Contato por WhatsApp (links `wa.me`, sem custo e sem API)
+- Páginas de Catequese e de Sacramentos
+- Bloco "Onde estamos" com mapa e rodapé institucional com redes sociais
+- Home, Missas, Avisos, Contato e painel admin reformulados

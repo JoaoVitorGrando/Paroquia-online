@@ -44,8 +44,12 @@ class GrupoSeeder extends Seeder
             ],
         ];
 
+        // Evita duplicar dados ao rodar o seeder mais de uma vez
         foreach ($grupos as $grupo) {
-            Grupo::create(array_merge($grupo, ['ativo' => true]));
+            Grupo::firstOrCreate(
+                ['nome' => $grupo['nome']],
+                array_merge($grupo, ['ativo' => true])
+            );
         }
     }
 }

@@ -18,6 +18,10 @@ Route::get('/sobre', [HomeController::class, 'sobre'])->name('sobre');
 Route::get('/contato', [HomeController::class, 'contato'])->name('contato');
 Route::post('/contato', [HomeController::class, 'contatoEnviar'])->name('contato.enviar');
 
+// Catequese e Sacramentos
+Route::get('/catequese', [HomeController::class, 'catequese'])->name('catequese');
+Route::get('/sacramentos', [HomeController::class, 'sacramentos'])->name('sacramentos');
+
 // US001 - Horários de Missas
 Route::get('/missas', [MissaController::class, 'index'])->name('missas.index');
 

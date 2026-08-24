@@ -47,8 +47,12 @@ class EventoSeeder extends Seeder
             ],
         ];
 
+        // Evita duplicar dados ao rodar o seeder mais de uma vez.
+        // A busca usa titulo + data; whereDate compara so a data, ignorando a hora
+        // que o cast 'date' grava junto no banco.
         foreach ($eventos as $evento) {
-            Evento::create($evento);
+            Evento::whereDate('data', $evento['data'])
+                ->firstOrCreate(['titulo' => $evento['titulo']], $evento);
         }
     }
 }

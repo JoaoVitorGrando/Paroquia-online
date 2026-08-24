@@ -3,22 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Missa;
-use Illuminate\Http\Request;
 
 class MissaController extends Controller
 {
-    // US001 - Exibir horários de missas
+    // US001 - Exibir horarios de missas (ordenacao centralizada no model)
     public function index()
     {
-        $ordem = [
-            'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira',
-            'Quinta-feira', 'Sexta-feira', 'Sábado',
-        ];
+        $missas = Missa::listarOrdenadas()->where('ativo', true)->values();
 
-        $missas = Missa::where('ativo', true)->get()->sortBy(function ($missa) use ($ordem) {
-            return array_search($missa->dia_semana, $ordem);
-        })->values();
+        // US001 - Faixa "Proxima missa" no topo da pagina
+        $proximaMissa = Missa::proxima();
 
-        return view('missas.index', compact('missas'));
+        return view('missas.index', compact('missas', 'proximaMissa'));
     }
 }

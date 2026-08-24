@@ -18,6 +18,11 @@ class VoluntarioController extends Controller
         $evento = Evento::findOrFail($eventoId);
         $user   = Auth::user();
 
+        // O administrador gerencia e acompanha, nao participa
+        if ($user->is_admin) {
+            return back()->with('erro', 'Administradores não podem se candidatar a voluntário. Use o painel para visualizar os voluntários.');
+        }
+
         if ($user->eventosVoluntario()->where('evento_id', $evento->id)->exists()) {
             return back()->with('erro', 'Você já está inscrito como voluntário neste evento.');
         }

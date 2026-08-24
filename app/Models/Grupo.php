@@ -16,6 +16,7 @@ class Grupo extends Model
         'dia_reuniao',
         'horario_reuniao',
         'local',
+        'imagem',
         'ativo',
     ];
 

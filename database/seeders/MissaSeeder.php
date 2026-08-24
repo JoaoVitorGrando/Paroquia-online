@@ -18,8 +18,12 @@ class MissaSeeder extends Seeder
             ['dia_semana' => 'Domingo',       'horario' => '19:00', 'local' => 'Igreja Matriz', 'observacao' => null],
         ];
 
+        // Evita duplicar dados ao rodar o seeder mais de uma vez
         foreach ($missas as $missa) {
-            Missa::create(array_merge($missa, ['ativo' => true]));
+            Missa::firstOrCreate(
+                ['dia_semana' => $missa['dia_semana'], 'horario' => $missa['horario']],
+                array_merge($missa, ['ativo' => true])
+            );
         }
     }
 }

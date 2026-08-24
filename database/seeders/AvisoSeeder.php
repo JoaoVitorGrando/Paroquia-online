@@ -27,8 +27,12 @@ class AvisoSeeder extends Seeder
             ],
         ];
 
+        // Evita duplicar dados ao rodar o seeder mais de uma vez
         foreach ($avisos as $aviso) {
-            Aviso::create($aviso);
+            Aviso::firstOrCreate(
+                ['titulo' => $aviso['titulo']],
+                $aviso
+            );
         }
     }
 }
